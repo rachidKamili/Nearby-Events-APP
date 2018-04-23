@@ -21,7 +21,7 @@ import me.kamili.rachid.nearbyeventsapp.model.Event;
 import me.kamili.rachid.nearbyeventsapp.model.Pagination;
 import me.kamili.rachid.nearbyeventsapp.model.ResponseData;
 
-public class EventsActivity extends AppCompatActivity implements EventsContract.View {
+public class EventsActivity extends AppCompatActivity implements EventsContract.View , EventAdapter.IOnFavoriteBtnClick {
 
     private static final int FIRST_PAGE = -10;
     @BindView(R.id.btnLoadMore)
@@ -41,8 +41,8 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
         setContentView(R.layout.activity_events);
 
         ButterKnife.bind(this);
+        presenter = new EventsPresenter(new EventManager(),this);
         initRecycler();
-        presenter = new EventsPresenter(new EventManager());
     }
 
     private void initRecycler() {
@@ -54,7 +54,7 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
             mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         }
 
-        mAdapter = new EventAdapter(this,myDataset);
+        mAdapter = new EventAdapter(this,myDataset, presenter.getFavList());
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -92,5 +92,10 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
 
             myDataset.addAll(data.getEvents());
             mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public List<String> onFavoriteBtnClicked(Event event) {
+        return presenter.handleFavEvent(event);
     }
 }

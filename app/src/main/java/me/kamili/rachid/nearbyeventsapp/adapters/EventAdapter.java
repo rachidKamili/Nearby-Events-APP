@@ -2,6 +2,7 @@ package me.kamili.rachid.nearbyeventsapp.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,18 +24,22 @@ import me.kamili.rachid.nearbyeventsapp.utils.DateConverter;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
 
     private Context mContext;
+    private IOnFavoriteBtnClick favoriteListener;
     private List<Event> mDataset;
+    private List<String> favListIds;
 
-    public EventAdapter(Context context, List<Event> myDataset) {
+    public EventAdapter(Context context, List<Event> myDataset, List<String> favListIds) {
+        this.favListIds = favListIds;
         this.mDataset = myDataset;
         this.mContext = context;
+        this.favoriteListener = (IOnFavoriteBtnClick) context;
     }
 
     @NonNull
     @Override
     public EventAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
-        View v =  LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_event, parent, false);
 
         ViewHolder vh = new ViewHolder(v);
@@ -49,8 +47,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Event data = mDataset.get(position);
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final Event data = mDataset.get(position);
 
         holder.tvDay.setText(DateConverter.toDay(data.getStart().getUtc()));
         holder.tvMonth.setText(DateConverter.toMonthName3L(data.getStart().getUtc()));
@@ -60,14 +58,34 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
         Glide.with(mContext)
                 .load(data.getLogo().getUrl())
-                .apply(new RequestOptions().override(585,260))
+                .apply(new RequestOptions().override(585, 260))
                 .into(holder.ivImage);
 
+        holder.btnFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favListIds = favoriteListener.onFavoriteBtnClicked(data);
+                setImageToBtn(holder.btnFav, data.getId());
+            }
+        });
+        setImageToBtn(holder.btnFav, data.getId());
+    }
+
+    private void setImageToBtn(FloatingActionButton btn, String id) {
+        if (favListIds.contains(id)) {
+            btn.setImageResource(R.drawable.ic_favorite);
+        } else {
+            btn.setImageResource(R.drawable.ic_favorite_border);
+        }
     }
 
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public interface IOnFavoriteBtnClick {
+        List<String> onFavoriteBtnClicked(Event event);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -83,6 +101,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         public TextView tvOn;
         @BindView(R.id.ivImage)
         public ImageView ivImage;
+        @BindView(R.id.btnFav)
+        public FloatingActionButton btnFav;
 
         public ViewHolder(View itemView) {
             super(itemView);
