@@ -25,6 +25,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
     private Context mContext;
     private IOnFavoriteBtnClick favoriteListener;
+    private OnEventClickListener clickListener;
     private List<Event> mDataset;
     private List<String> favListIds;
 
@@ -33,6 +34,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         this.mDataset = myDataset;
         this.mContext = context;
         this.favoriteListener = (IOnFavoriteBtnClick) context;
+        this.clickListener = (OnEventClickListener) context;
     }
 
     @NonNull
@@ -69,6 +71,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             }
         });
         setImageToBtn(holder.btnFav, data.getId());
+
+        holder.bind(mDataset.get(position));
     }
 
     private void setImageToBtn(FloatingActionButton btn, String id) {
@@ -87,6 +91,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     public interface IOnFavoriteBtnClick {
         List<String> onFavoriteBtnClicked(Event event);
     }
+
+    public interface OnEventClickListener {
+        void onItemClick(Event item);
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvDay)
@@ -107,6 +116,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(final Event item) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onItemClick(item);
+                }
+            });
         }
     }
 }

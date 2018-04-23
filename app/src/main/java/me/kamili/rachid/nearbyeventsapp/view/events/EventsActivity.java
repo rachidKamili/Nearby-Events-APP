@@ -1,5 +1,6 @@
 package me.kamili.rachid.nearbyeventsapp.view.events;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,9 @@ import me.kamili.rachid.nearbyeventsapp.managers.EventManager;
 import me.kamili.rachid.nearbyeventsapp.model.Event;
 import me.kamili.rachid.nearbyeventsapp.model.Pagination;
 import me.kamili.rachid.nearbyeventsapp.model.ResponseData;
+import me.kamili.rachid.nearbyeventsapp.view.details.DetailsActivity;
 
-public class EventsActivity extends AppCompatActivity implements EventsContract.View , EventAdapter.IOnFavoriteBtnClick {
+public class EventsActivity extends AppCompatActivity implements EventsContract.View , EventAdapter.IOnFavoriteBtnClick, EventAdapter.OnEventClickListener {
 
     private static final int FIRST_PAGE = -10;
     @BindView(R.id.btnLoadMore)
@@ -124,5 +126,12 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
             myDataset.clear();
             presenter.loadFavData();
         }
+    }
+
+    @Override
+    public void onItemClick(Event item) {
+        Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+        intent.putExtra("event_id", item.getId());
+        startActivity(intent);
     }
 }

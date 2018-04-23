@@ -56,7 +56,7 @@ public class Event{
 	private String id;
 
 	@SerializedName("venue_id")
-	private Object venueId;
+	private String venueId;
 
 	@SerializedName("created")
 	private String created;
@@ -248,11 +248,11 @@ public class Event{
 		return id;
 	}
 
-	public void setVenueId(Object venueId){
+	public void setVenueId(String venueId){
 		this.venueId = venueId;
 	}
 
-	public Object getVenueId(){
+	public String getVenueId(){
 		return venueId;
 	}
 
