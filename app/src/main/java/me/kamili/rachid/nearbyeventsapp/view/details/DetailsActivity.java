@@ -94,7 +94,10 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
     public void onLoadOrganizer(Organizer data) {
         tvOrganizerName.setText(data.getName());
         tvOrganizerName2.setText(data.getName());
-        tvOrganizerDesc.setText(data.getDescription().getText().trim());
+        if (data.getDescription().getText() != null)
+            tvOrganizerDesc.setText(data.getDescription().getText().trim());
+        else if (data.getLongDescription().getText() != null)
+            tvOrganizerDesc.setText(data.getLongDescription().getText().toString());
     }
 
     @Override
@@ -102,15 +105,15 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContrac
         tvVenueName.setText(data.getName());
         tvAddress.setText(data.getAddress().getLocalizedAddressDisplay());
 
-        final String location = data.getLatitude()+","+data.getLongitude();
-        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+location+"&zoom=13&size=1200x500&maptype=roadmap&markers=color:red%7Clabel:%7C"+location;
+        final String location = data.getLatitude() + "," + data.getLongitude();
+        String mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + location + "&zoom=13&size=1200x500&maptype=roadmap&markers=color:red%7Clabel:%7C" + location;
         Glide.with(this)
                 .load(mapUrl)
                 .into(ivMap);
         ivMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("geo:"+location+"?q="+data.getAddress().getAddress1());
+                Uri gmmIntentUri = Uri.parse("geo:" + location + "?q=" + data.getAddress().getLocalizedAddressDisplay());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);

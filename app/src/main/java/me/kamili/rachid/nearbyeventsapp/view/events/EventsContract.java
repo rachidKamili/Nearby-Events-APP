@@ -1,5 +1,7 @@
 package me.kamili.rachid.nearbyeventsapp.view.events;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import me.kamili.rachid.nearbyeventsapp.model.Event;
@@ -18,5 +20,6 @@ public interface EventsContract {
         void loadFavData();
         List<String> handleFavEvent(Event event);
         List<String> getFavList();
+        void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
     }
 }
