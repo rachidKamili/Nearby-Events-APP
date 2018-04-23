@@ -58,10 +58,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         holder.tvLocation.setText(data.getCurrency());
         holder.tvOn.setText("on EventBrite");
 
-        Glide.with(mContext)
-                .load(data.getLogo().getUrl())
-                .apply(new RequestOptions().override(585, 260))
-                .into(holder.ivImage);
+        if (data.getLogo() != null)
+            Glide.with(mContext)
+                    .load(data.getLogo().getUrl())
+                    .apply(new RequestOptions().override(585, 260))
+                    .into(holder.ivImage);
 
         holder.btnFav.setOnClickListener(new View.OnClickListener() {
             @Override

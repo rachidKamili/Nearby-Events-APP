@@ -30,6 +30,7 @@ public class EventsPresenter implements EventsContract.Presenter, PermissionMana
     private EventManager mEventManager;
     private EventsContract.View view;
     private SharedPreferences mSharedPref;
+    private Integer mRadius = 100;
 
     private PermissionManager permissionManager;
     private LocationManager mLocationManager;
@@ -67,12 +68,12 @@ public class EventsPresenter implements EventsContract.Presenter, PermissionMana
     }
 
     @Override
-    public void loadData(final int page) {
+    public void loadData(final int page, String search) {
         Map<String, String> resources = new HashMap<>();
-        resources.put("q", "html+css+js");
+        resources.put("q", search);
         resources.put("location.latitude", mLocation.getLatitude()+"");
         resources.put("location.longitude", mLocation.getLongitude()+"");
-        resources.put("location.within", "25mi");
+        resources.put("location.within", mRadius+"mi");
 
         if (page != FIRST_PAGE) {
             resources.put("page", String.valueOf(page));
@@ -136,7 +137,7 @@ public class EventsPresenter implements EventsContract.Presenter, PermissionMana
     @Override
     public void onLocationChanged(Location location) {
         mLocation = location;
-        loadData(FIRST_PAGE);
+        loadData(FIRST_PAGE,"");
     }
 
     @Override
@@ -145,5 +146,11 @@ public class EventsPresenter implements EventsContract.Presenter, PermissionMana
             mLocationManager = LocationManager.getInstance(mContext, this);
             mLocationManager.getLocation();
         }
+    }
+
+    @Override
+    public void setRadius(int radius, String search) {
+        mRadius = radius;
+        loadData(FIRST_PAGE, search);
     }
 }

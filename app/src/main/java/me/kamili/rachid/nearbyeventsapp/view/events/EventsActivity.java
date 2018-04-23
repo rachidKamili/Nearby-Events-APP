@@ -7,8 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -35,6 +40,14 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
     Button favBtn;
     @BindView(R.id.rvEvents)
     RecyclerView mRecyclerView;
+    @BindView(R.id.sbRadius)
+    SeekBar sbRadius;
+    @BindView(R.id.valueRadius)
+    TextView valueRadius;
+    @BindView(R.id.etSearch)
+    EditText etSearch;
+
+
     private RecyclerView.Adapter mAdapter;
     private List<Event> myDataset = new ArrayList<>();
     private Pagination mPagination;
@@ -69,6 +82,35 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
 
         mAdapter = new EventAdapter(this,myDataset, presenter.getFavList());
         mRecyclerView.setAdapter(mAdapter);
+
+        sbRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                presenter.setRadius(progress, etSearch.getText().toString());
+                valueRadius.setText(progress+"miles");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    presenter.loadData(FIRST_PAGE, etSearch.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -89,7 +131,7 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
     }
 
     public void onLoadMoreEvents(View view) {
-        presenter.loadData(mPagination.getPageNumber()+1);
+        presenter.loadData(mPagination.getPageNumber()+1, etSearch.getText().toString());
     }
 
     @Override
@@ -122,7 +164,7 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
         if (view.isEnabled()){
             view.setEnabled(false);
             favBtn.setEnabled(true);
-            presenter.loadData(FIRST_PAGE);
+            presenter.loadData(FIRST_PAGE, etSearch.getText().toString());
         }
     }
 

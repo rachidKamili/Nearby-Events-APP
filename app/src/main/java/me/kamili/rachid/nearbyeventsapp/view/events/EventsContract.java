@@ -16,10 +16,11 @@ public interface EventsContract {
     }
 
     interface Presenter extends BasePresenter<View> {
-        void loadData(int page);
+        void loadData(int page, String search);
         void loadFavData();
         List<String> handleFavEvent(Event event);
         List<String> getFavList();
+        void setRadius(int radius, String search);
         void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
     }
 }

@@ -10,6 +10,51 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownHeight="match_parent"
+                android:hint="Search"
+                android:layout_margin="20dp"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:padding="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Radius:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <SeekBar
+                android:id="@+id/sbRadius"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="300"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:progress="100"/>
+            <TextView
+                android:id="@+id/valueRadius"
+                android:text="100miles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
