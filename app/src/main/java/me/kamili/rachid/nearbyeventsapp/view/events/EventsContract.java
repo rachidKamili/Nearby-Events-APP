@@ -10,10 +10,12 @@ import me.kamili.rachid.nearbyeventsapp.view.base.BaseView;
 public interface EventsContract {
     interface View extends BaseView {
         void onLoadData(ResponseData data, int page);
+        void onLoadFavData(Event data);
     }
 
     interface Presenter extends BasePresenter<View> {
         void loadData(int page);
+        void loadFavData();
         List<String> handleFavEvent(Event event);
         List<String> getFavList();
     }

@@ -78,6 +78,31 @@ public class EventsPresenter implements EventsContract.Presenter {
                 });
     }
 
+    @Override
+    public void loadFavData() {
+
+        for (String id:favIds){
+            if (!id.trim().isEmpty()){
+                mEventManager.createAPI().getEventById(id)
+                        .enqueue(new Callback<Event>() {
+                            @Override
+                            public void onResponse(Call<Event> call, Response<Event> response) {
+                                Event data = response.body();
+                                if (data != null) {
+                                    if (view != null)
+                                        view.onLoadFavData(data);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Event> call, Throwable t) {
+
+                            }
+                        });
+            }
+        }
+    }
+
     public List<String> handleFavEvent(Event event) {
         if (favIds.contains(event.getId()) ){
             favIds.remove(event.getId());

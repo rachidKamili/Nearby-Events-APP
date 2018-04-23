@@ -26,6 +26,10 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
     private static final int FIRST_PAGE = -10;
     @BindView(R.id.btnLoadMore)
     Button btnLoadMore;
+    @BindView(R.id.homeBtn)
+    Button homeBtn;
+    @BindView(R.id.favBtn)
+    Button favBtn;
     @BindView(R.id.rvEvents)
     RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -95,7 +99,30 @@ public class EventsActivity extends AppCompatActivity implements EventsContract.
     }
 
     @Override
+    public void onLoadFavData(Event data) {
+        myDataset.add(data);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public List<String> onFavoriteBtnClicked(Event event) {
         return presenter.handleFavEvent(event);
+    }
+
+    public void onHomeClicked(View view) {
+        if (view.isEnabled()){
+            view.setEnabled(false);
+            favBtn.setEnabled(true);
+            presenter.loadData(FIRST_PAGE);
+        }
+    }
+
+    public void onFavClicked(View view) {
+        if (view.isEnabled()){
+            view.setEnabled(false);
+            homeBtn.setEnabled(true);
+            myDataset.clear();
+            presenter.loadFavData();
+        }
     }
 }
